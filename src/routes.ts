@@ -33,6 +33,8 @@ export async function appRoutes(app: FastifyInstance) {
     
   })
 
+
+
   app.post('/users', async (request) => {
 
     const createHabitBody = z.object({
