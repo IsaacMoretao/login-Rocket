@@ -5,18 +5,15 @@ import { prisma } from "./lib/prisma"
 
 export async function appRoutes(app: FastifyInstance) {
 
-  app.get('/users', async (request) => {
-    console.log(request.body)
+  app.post('/users/log', async (request) => {
     
+
     const createHabitBody = z.object({
       name: z.string(),
       password: z.string(),
     })
   
     const { name, password } = createHabitBody.parse(request.body)
-
-    
-
 
     const user = await prisma.users.findFirst({
       where:{
@@ -27,32 +24,50 @@ export async function appRoutes(app: FastifyInstance) {
       }
     })
 
-    return user != null
+    if ( user != null) {
+      return user
+      
+    } else {
+      return 'usuário não encontrado'
+    }
     
   })
 
-
   app.post('/users', async (request) => {
-    const createTshirts = z.object({
+
+    const createHabitBody = z.object({
       name: z.string(),
       password: z.string(),
-
     })
-
-    const {
-      name,
-      password
-
-    } = createTshirts.parse(request.body)
   
-    await prisma.users.create({
-      data: {
-        name,
-        password
+    const { name, password } = createHabitBody.parse(request.body)
 
+    const user = await prisma.users.findFirst({
+      where:{
+        AND: {
+          name
+        }
       }
     })
+
+    if ( user != null) {
+
+      return 'Esse usuário já existe'
+      
+    } else {
+
+      await prisma.users.create({
+        data: {
+          name,
+          password
   
-    })
+        }
+      })
+
+      return 'Usuário criado com sucesso'
+
+    }
+  
+  })
 
 }
