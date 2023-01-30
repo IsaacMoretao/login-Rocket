@@ -5,6 +5,10 @@ import { prisma } from "./lib/prisma"
 
 export async function appRoutes(app: FastifyInstance) {
 
+  app.get('/', async () => {
+    const user = await prisma.users.findMany()
+  })
+
   app.post('/users/log', async (request) => {
     
 
