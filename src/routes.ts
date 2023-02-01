@@ -1,17 +1,40 @@
-import { FastifyInstance } from "fastify"
+import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { prisma } from "./lib/prisma"
-
+import { prisma } from "./lib/prisma";
 
 export async function appRoutes(app: FastifyInstance) {
 
-  app.get('/', async () => {
-    const user = await prisma.users.findMany()
-  })
+  app.put('/users/:id', async (request) => {
+    
+    const updateBody = z.object({
+      
+      name: z.string(),
+      password: z.string(),
+      avatarUrl: z.string()
+    })
+
+    
+
+    const { name, password, avatarUrl } = updateBody.parse(request.body)
+    const { id }: String = request.params
+    
+    const result = await prisma.users.update({
+      where: {
+        id
+      }, 
+      data: {
+        name,
+        password,
+        avatarUrl
+      }
+      
+    });
+
+    console.log(result)
+  });
 
   app.post('/users/log', async (request) => {
     
-
     const createHabitBody = z.object({
       name: z.string(),
       password: z.string(),
@@ -34,16 +57,14 @@ export async function appRoutes(app: FastifyInstance) {
     } else {
       return 'usuário não encontrado'
     }
-    
   })
-
-
 
   app.post('/users', async (request) => {
 
     const createHabitBody = z.object({
       name: z.string(),
       password: z.string(),
+
     })
   
     const { name, password } = createHabitBody.parse(request.body)
@@ -73,7 +94,5 @@ export async function appRoutes(app: FastifyInstance) {
       return 'Usuário criado com sucesso'
 
     }
-  
   })
-
 }
