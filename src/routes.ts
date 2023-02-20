@@ -4,33 +4,27 @@ import { prisma } from "./lib/prisma";
 
 export async function appRoutes(app: FastifyInstance) {
 
-  app.put('/users/:id', async (request) => {
-    
-    const updateBody = z.object({
-      
-      name: z.string(),
-      password: z.string(),
-      avatarUrl: z.string()
-    })
+  interface User {
+    name: string;
+    avatarUrl: string;
+    password: string;
+  }
+  
+  app.put<{ Params: { id: string }, Body: User }>('/users/:id', async (request, reply) => {
+    const id = request.params.id;
+    const { name, avatarUrl, password } = request.body;
+  
+    try {
+      const user = await prisma.users.update({
+        where: { id },
+        data: { name, avatarUrl, password },
+      });
 
-    
-
-    const { name, password, avatarUrl } = updateBody.parse(request.body)
-    const { id }: String = request.params
-    
-    const result = await prisma.users.update({
-      where: {
-        id
-      }, 
-      data: {
-        name,
-        password,
-        avatarUrl
-      }
-      
-    });
-
-    console.log(result)
+      reply.send(user);
+    } catch (error) {
+      console.error(error);
+      reply.status(500).send('Something went wrong');
+    }
   });
 
   app.post('/users/log', async (request) => {
@@ -96,3 +90,6 @@ export async function appRoutes(app: FastifyInstance) {
     }
   })
 }
+
+
+

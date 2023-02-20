@@ -10,9 +10,8 @@
   "license": "MIT",
   "devDependencies": {
     "@mermaid-js/mermaid-cli": "^9.3.0",
-    "@types/express": "^4.17.16",
+    "@types/bcrypt": "^5.0.0",
     "add": "^2.0.6",
-    "ou": "^0.0.2",
     "prisma": "^4.9.0",
     "prisma-erd-generator": "^1.2.5",
     "tsx": "^3.12.2",
@@ -22,7 +21,7 @@
   "dependencies": {
     "@fastify/cors": "^8.2.0",
     "@prisma/client": "^4.9.0",
-    "express": "^4.18.2",
+    "bcrypt": "^5.1.0",
     "fastify": "^4.12.0",
     "zod": "^3.20.2"
   }
